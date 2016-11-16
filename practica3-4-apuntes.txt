@@ -1,0 +1,11 @@
+Hay que encontrar el fin de la linea con el \o
+¿evitar que se ejecute algo? porque siempre se pasa al menos una vez por ahí
+leer como máximo n bytes (argumento en la llamada)
+reservo 20, leo como mucho 50 y hay 45 disponibles. Leo 45 porque es menos del mínimo
+, los primeros 20 bien y los siguientes macharán lo que haya.
+
+cuando el hi es no nulo es que ha habido desbordamiento
+
+p4- pensar solo en la iteración enésima para fibonacci, factorial
+
+

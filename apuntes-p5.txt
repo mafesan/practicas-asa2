@@ -1,0 +1,17 @@
+cuantos segmentos ocupa el programa? 
+text --> instrucciones del programa (p1)
+data --> variables globales -> sus valores pueden cambiar, pero no cambian de tamaño durante la ejecucion del programa
+pila --> subrutinas crean marcos de pila por cada invocación, variables de las subrutinas, también hay paso de parámetros (desbordamiento). El segmento de pila es dinámico
+montón --> alberga memoria dinámica. Ejemplo: notas de los alumnos (63) array fijo de 63 posiciones. ¿Programa para asignatura cuyo nº de alumnos no se conoce? -> memoria dinamica. (árboles y listas)
+reserva de memoria con mallock y liberas con buenok xD
+
+sbrk (allocate heap memory)
+
+Crear nodo --> sbrk
+La idea es implementar el insert_tree de forma recursiva
+
+Imprimir recursivo: a partir de nodo raiz, se imprime la rama izquierda si esta es no-nula
+"Imprimo la rama izquierda (3) mi numero (8) y la derecha (10)
+fibonacci de 6... ¿cuantas veces se invoca fibonacci de 3? --> varias veces
+
+
