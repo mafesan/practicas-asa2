@@ -6,6 +6,49 @@ reservo 20, leo como mucho 50 y hay 45 disponibles. Leo 45 porque es menos del m
 
 cuando el hi es no nulo es que ha habido desbordamiento
 
+
+# Practica 4
 p4- pensar solo en la iteración enésima para fibonacci, factorial
 
+$sp apunta a la dirección maxima de memoria a la que puede apuntar mi programa
 
+(antes sp, ahora baja al reservar 32 bytes)
+fp-->  __________
+      |___$ra____| \                  #Dirección mayor
+      |___$fp____| | 32 bytes
+      |          | |
+$sp-->|----------| /
+      |          |
+      |          |
+      |          |
+      ·          ·
+      ·          ·
+      |   heap ^ |
+      |----------|
+      |  static  |
+      |----------|
+      |   text   |
+      |__________|                    #Dirección menor
+      
+      
+      Escribo en mi marco "hacia arriba" (De menor a mayor)
+      
+      
+      ___________
+     |___________|
+  16 |___________|
+  20 |___________|
+  24 |___________|
+  28 |___________|
+  32 |->_________|
+  
+  
+  Guardo el $ra en mi marco de pila porque al ser una función recursiva, 
+  se llama con jal de nuevo y se machaca el registro $ra
+  
+  jal --> PC (direccion apuntada por instrucción-etiqueta)
+      --> $ra (siguiente instrucción al jal)
+  
+  
+  
+  
