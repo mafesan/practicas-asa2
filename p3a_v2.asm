@@ -19,7 +19,7 @@ main:
 	
 move1:	move $a0, $s0	
 
-print1:		li $v0, 1 # Imprime resultado por pantalla
+print1:	li $v0, 1 # Imprime resultado por pantalla
 	syscall
 	
 	li $v0, 10 # End of program
