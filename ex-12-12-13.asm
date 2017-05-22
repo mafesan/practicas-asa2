@@ -30,6 +30,7 @@ main:
 	
 	move $s1, $v0 # Actualizo valor del útlimo nodo
 	
+	move $a0, $s1
 	jal print
 	
 	li $v0, 10
@@ -58,15 +59,16 @@ insert:
 	jr $ra
 	
 print:
-	move $t0, $s0
-	move $t1, $s1
+	move $t0, $a0 # Me guardo a0 por si acaso
+	move $t2, $a0
+	# El convenio permite usar reg. estaticos desde una subrutina?
 	
-pnext:	beq $t0, $t1, endp
-	lw $a0, 0($t0)
-	li $v0, 1
+pnext:	lw $t1, 4($t0) # Cogo dir. memoria de next
+	lw $a0, 0($t0) # Cargo entero
+	li $v0, 1 # Imprimo entero
 	syscall
-	lw $t2, 4($t0)
-	move $t0, $t2
+	beqz $t1, endp # Si dir. memoria es 0, fin
+	move $t0, $t1
 	b pnext
 endp:	jr $ra	
 	
