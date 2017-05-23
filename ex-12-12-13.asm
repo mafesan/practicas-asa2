@@ -2,6 +2,7 @@
 
 	.data
 nomem:	.asciiz "No hay memoria\n"
+newl:	.asciiz "\n"
 	.text
 	
 main: 
@@ -44,10 +45,10 @@ insert:
 	# Duda: Si no se usa fp, se guarda?
 	sw $fp, 16($sp)		# Save frame pointer
 	addiu $fp, $sp, 28	# Set up frame pointer	
+	sw $a0, 0($fp) # Guardo parametro que me han pasado en la pila
 	
 	#Tengo en a0 la dir. del ultimo nodo y en a1 el nuevo valor
 	move $t0, $a0
-	move $t3, $a0 # Creo que esta mal: debería de guardarlo en la pila y restaurarlo luego
 	move $t1, $a1
 	
 	move $a0, $t1
@@ -55,7 +56,8 @@ insert:
 	
 	jal create
 	
-	sw $v0, 4($t3) # a la salida de create asigno la direccion del nodo actual 
+	lw $t0, 0($fp)
+	sw $v0, 4($t0) # a la salida de create asigno la direccion del nodo actual 
 	# que sale de $v0 al parametro 2 del nodo anterior
 	
 	lw $ra, 20($sp)
@@ -71,6 +73,9 @@ print:
 pnext:	lw $t1, 4($t0) # Cogo dir. memoria de next
 	lw $a0, 0($t0) # Cargo entero
 	li $v0, 1 # Imprimo entero
+	syscall
+	la $a0, newl
+	li $v0, 4
 	syscall
 	beqz $t1, endp # Si dir. memoria es 0, fin
 	move $t0, $t1
