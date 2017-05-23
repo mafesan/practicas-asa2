@@ -30,7 +30,8 @@ main:
 	
 	move $s1, $v0 # Actualizo valor del útlimo nodo
 	
-	move $a0, $s1
+	move $a0, $s0
+	
 	jal print
 	
 	li $v0, 10
@@ -46,12 +47,16 @@ insert:
 	
 	#Tengo en a0 la dir. del ultimo nodo y en a1 el nuevo valor
 	move $t0, $a0
+	move $t3, $a0 # Creo que esta mal: debería de guardarlo en la pila y restaurarlo luego
 	move $t1, $a1
 	
 	move $a0, $t1
-	move $a1, $t0
+	li $a1, 0
 	
 	jal create
+	
+	sw $v0, 4($t3) # a la salida de create asigno la direccion del nodo actual 
+	# que sale de $v0 al parametro 2 del nodo anterior
 	
 	lw $ra, 20($sp)
 	lw $fp, 16($sp)
