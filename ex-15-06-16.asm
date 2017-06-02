@@ -22,17 +22,17 @@ main:
 	li $v0, 9
 	syscall
 	beqz $v0, nomemory
-	# Ahora v0 contiene direccion de memoria de primer nodo
-	# Inicializo nodo inicial
-	move $t1, $v0
-	sw $t0, 0($t1)
-	li $t2, 0
-	sw $t2, 4($t1)
 	
 	# Actualizo valores de $s0 y $s1
 	# Como es el primer nodo, s0 = s1
-	move $s0, $t1
-	move $s1, $t1
+	move $s0, $v0
+	move $s1, $v0
+	# Ahora v0 contiene direccion de memoria de primer nodo
+	# Inicializo nodo inicial
+
+	sw $t0, 0($v0)
+	li $t2, 0
+	sw $t2, 4($v0)
 	# A partir de aquí, tengo que hacer inserts
 	
 askint:	la $a0, msg
@@ -49,11 +49,11 @@ askint:	la $a0, msg
 	
 	jal insert
 	
-	move $s1, $v0 # Actualizo ultimo numero de la lista
+	move $s1, $v0 # Actualizo ultimo nodo de la lista
 
 	b askint
 
-exitloop:	
+exitloop:
 	move $a0, $s0
 	jal print
 		
@@ -71,44 +71,36 @@ insert:
 	# Recibo 2 parametros:
 	# a0: Direccion del ultimo nodo de la lista
 	# a1: Entero
-
 	move $t0, $a0
 	move $t1, $a1
-	
-	# Crear el nuevo nodo
-	# sbrk, reservando 8 bytes
+	# Primero, creamos el nodo reservando memoria
 	li $a0, 8
 	li $v0, 9
 	syscall
-	
 	beqz $v0, nomemory
 	
-	#Inicializo valores del nuevo nodo
+	# $v0 es la direccion de memoria del nuevo nodo
+	# Lo inicializamos:
 	sw $t1, 0($v0)
 	sw $zero, 4($v0)
 	
-	# Cargo direccion del ultimo nodo y le hago que apunte al nuevo
-	la $t2, 4($t0)
-	sw $v0, 4($t2)
+	# Ahora hacemos apuntar al ultimo nodo al nuevo
+	sw $v0, 4($t0)
 	
 	jr $ra
 	
 print:	
-
-	move $t0, $a0  # Copio valor del primer nodo
-
-ldata:	lw $t1, 0($t0) # Saco el entero actual
-	lw $t2, 4($t0) # Saco el puntero al siguiente
-	
-	beqz $t2, endprint
-	# Imprimo el entero:
-	move $a0, $t1
+	move $t0, $a0
+chck:	
+	# Ahora en t0 tengo el principio de la lista
+	# Saco el entero y lo imprimo
+	lw $a0, 0($t0)
 	li $v0, 1
 	syscall
+	# Compruebo si el el ultimo nodo
+	beq $t0, $s1, endp # Duda, puedo hacer esto?
+	# Cargo la dirección del siguiente nodo:
+	lw $t0, 4($t0)
+	b chck	
 	
-	move $t0, $t2
-	
-endprint:	
-	jr $ra
-	
-	
+endp:	jr $ra
