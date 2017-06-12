@@ -91,16 +91,17 @@ print:
 	# t0 = val
 
 	move $t1, $a0
-	lw $a0, 0($t1)
-	li $v0, 1
-	syscall #imprimo numero
-	
 	lw $a0, 4($t1)
 	beqz $a0, endp
 	jal print
 	
-	
-endp:	lw $fp, 16($sp)
+endp:
+	lw $a0, 0($fp)
+	lw $a0, 0($a0)
+	li $v0, 1
+	syscall #imprimo numero
+
+	lw $fp, 16($sp)
 	lw $ra, 20($sp)
 	addiu $sp, $sp, 32
 	jr $ra
