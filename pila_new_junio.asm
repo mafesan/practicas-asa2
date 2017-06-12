@@ -137,16 +137,14 @@ remove: # remove(top,val)
 keepsearching:	
 	lw $t3, 0($t2)
 	beq $t3, $t1, equal
-	
-	lw $t4, 4($t2)
-	beqz $t4, notfound
-	# Ahora mi top es mi nodo actual (t0 = t2)
-	b keepsearching
+	lw $t2, 4($t2)
+	bnez $t2, keepsearching
+	b notfound
 equal:
 	# Este es el nodo que quiero borrar 0($t2)
 	# 4($t0) tiene que apuntar a 4($t2)
 	move $v0, $t2
-	lw $t5, 4($t2)
+	lw $t5, 0($t2)
 	sw $t5, 4($t0)
 returnremove:
 	jr $ra
@@ -154,7 +152,5 @@ returnremove:
 notfound:
 	move $v0, $zero
 	b returnremove
-	
-	
 	
 	
