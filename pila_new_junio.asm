@@ -1,6 +1,7 @@
 	.data
 intro:	.asciiz "Introduce un entero:\n"
-	
+space: .asciiz " "
+askrem:	.asciiz "\nIntroduce el entero que quieres borrar\n"
 	.text
 	
 main:
@@ -41,6 +42,23 @@ askint:
 endint:
 	move $a0, $s0
 	jal print
+	
+	la $a0, askrem
+	li $v0, 4
+	syscall
+	
+	li $v0, 5
+	syscall
+	
+	move $a0, $s0
+	move $a1, $v0
+	
+	jal remove
+	
+	move $a0, $s0
+	
+	jal print
+	
 	li $v0, 10
 	syscall
 	
@@ -92,17 +110,51 @@ print:
 
 	move $t1, $a0
 	lw $a0, 4($t1)
-	beqz $a0, endp
+	beqz $a0, returnp
 	jal print
 	
-endp:
+returnp:
 	lw $a0, 0($fp)
 	lw $a0, 0($a0)
 	li $v0, 1
 	syscall #imprimo numero
+	la $a0, space
+	li $v0, 4
+	syscall
 
 	lw $fp, 16($sp)
 	lw $ra, 20($sp)
 	addiu $sp, $sp, 32
 	jr $ra
+
+remove: # remove(top,val)
+	move $t0, $a0
+	move $t1, $a1
+	
+	# Recibo primer nodo de la pila,  y no lo miro porque no se puede 
+	lw $t2, 4($t0)
+	# Ahora empiezo a recorrer desde t2
+keepsearching:	
+	lw $t3, 0($t2)
+	beq $t3, $t1, equal
+	
+	lw $t4, 4($t2)
+	beqz $t4, notfound
+	# Ahora mi top es mi nodo actual (t0 = t2)
+	b keepsearching
+equal:
+	# Este es el nodo que quiero borrar 0($t2)
+	# 4($t0) tiene que apuntar a 4($t2)
+	move $v0, $t2
+	lw $t5, 4($t2)
+	sw $t5, 4($t0)
+returnremove:
+	jr $ra
+	
+notfound:
+	move $v0, $zero
+	b returnremove
+	
+	
+	
 	
