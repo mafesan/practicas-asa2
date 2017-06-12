@@ -129,22 +129,20 @@ returnp:
 
 remove: # remove(top,val)
 	move $t0, $a0
-	move $t1, $a1
-	
-	# Recibo primer nodo de la pila,  y no lo miro porque no se puede 
-	lw $t2, 4($t0)
-	# Ahora empiezo a recorrer desde t2
+	# Recibo primer nodo de la pila
+	# Ahora empiezo a recorrer desde t0
 keepsearching:	
-	lw $t3, 0($t2)
-	beq $t3, $t1, equal
-	lw $t2, 4($t2)
-	bnez $t2, keepsearching
+	lw $t1, 0($t0)
+	lw $t3, 4($t0)
+	beq $a1, $t1, equal
+	lw $t0, 4($t0)
+	bnez $t0, keepsearching
 	b notfound
 equal:
-	# Este es el nodo que quiero borrar 0($t2)
-	# 4($t0) tiene que apuntar a 4($t2)
-	move $v0, $t2
-	lw $t5, 0($t2)
+	# Este es el nodo que quiero borrar 0($t1)
+	# 4($t0) tiene que apuntar a 4($t1)
+	move $v0, $t1
+	lw $t5, 4($t3)
 	sw $t5, 4($t0)
 returnremove:
 	jr $ra
