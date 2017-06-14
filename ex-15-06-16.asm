@@ -5,7 +5,9 @@
 	.data
 msg:	.asciiz "Introduce un entero y 0 para terminar\n"
 newl:	.asciiz "\n"
+space:	.asciiz " "
 nomem:	.asciiz "No hay memoria\n"
+intrm:	.asciiz "Introduce entero que quieres borrar\n"
 	.text
 main:
 	la $a0, msg
@@ -56,6 +58,24 @@ askint:	la $a0, msg
 exitloop:
 	move $a0, $s0
 	jal print
+	
+	la $a0, newl
+	li $v0, 4
+	syscall  # Imprimimos nueva linea 
+	
+borr:	
+	la $a0, intrm
+	li $v0, 4
+	syscall # Imprimimos mensaje de borrado
+	
+	li $v0, 5
+	syscall # Leemos entero introducido
+	
+	# Parametros remove:
+	move $a0, $s0 # primer nodo
+	move $a1, $v0 # valor a eliminar
+	jal remove
+
 		
 endprog:	
 	li $v0, 10
@@ -71,8 +91,15 @@ insert:
 	# Recibo 2 parametros:
 	# a0: Direccion del ultimo nodo de la lista
 	# a1: Entero
-	move $t0, $a0
-	move $t1, $a1
+	# Creo pila para guardar contexto
+	subu $sp, $sp, 32
+	sw $ra, 20($sp)
+	sw $fp, 16($sp)
+	addiu $fp, $sp, 28
+	sw $a0, 0($fp)
+	sw $a1, 4($fp)
+	
+
 	# Primero, creamos el nodo reservando memoria
 	li $a0, 8
 	li $v0, 9
@@ -81,26 +108,74 @@ insert:
 	
 	# $v0 es la direccion de memoria del nuevo nodo
 	# Lo inicializamos:
-	sw $t1, 0($v0)
+	lw $t0, 4($fp)
+	sw $t0, 0($v0)
 	sw $zero, 4($v0)
 	
 	# Ahora hacemos apuntar al ultimo nodo al nuevo
-	sw $v0, 4($t0)
+	lw $t1, 0($fp)
+	sw $v0, 4($t1)
+	
+	lw $a0, 0($fp)
+	lw $a1, 4($fp)
+	lw $ra, 20($sp)
+	lw $fp, 16($sp)
+	addiu $sp, $sp, 32	
 	
 	jr $ra
 	
 print:	
-	move $t0, $a0
-chck:	
-	# Ahora en t0 tengo el principio de la lista
+	# Creo pila para guardar contexto
+	subu $sp, $sp, 32
+	sw $ra, 20($sp)
+	sw $fp, 16($sp)
+	addiu $fp, $sp, 28
+	
+	sw $a0, 0($fp)
+	lw $t0, 0($fp)
+	chck:	
+	# Ahora en 0($fp) tengo el principio de la lista
 	# Saco el entero y lo imprimo
+	
 	lw $a0, 0($t0)
 	li $v0, 1
 	syscall
-	# Compruebo si el el ultimo nodo
-	beq $t0, $s1, endp # Duda, puedo hacer esto?
+	
+	la $a0, space
+	li $v0, 4
+	syscall # Imprimo espacio
+	# Compruebo si el nodo actual es el ultimo
+	beq $t0, $s1, endp # Duda, puedo comparar un registro de mi funcion con un registro estatico?
+	
 	# Cargo la dirección del siguiente nodo:
 	lw $t0, 4($t0)
 	b chck	
 	
-endp:	jr $ra
+	endp:
+	
+	lw $a0, 0($fp)
+	lw $ra, 20($sp)
+	lw $fp, 16($sp)
+	addiu $sp, $sp, 32
+	jr $ra
+	
+remove:	
+	# Creo pila para guardar contexto
+	subu $sp, $sp, 32
+	sw $ra, 20($sp)
+	sw $fp, 16($sp)
+	addiu $fp, $sp, 28
+	sw $a0, 0($fp)
+	sw $a1, 4($fp)
+	
+	
+	
+	
+	lw $a0, 0($fp)
+	lw $a1, 4($fp)
+	lw $ra, 20($sp)
+	lw $fp, 16($sp)
+	addiu $sp, $sp, 32
+	jr $ra
+	
+	

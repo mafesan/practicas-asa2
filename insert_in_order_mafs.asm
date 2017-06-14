@@ -49,14 +49,14 @@ iio:
 	sw $fp, 16($sp)
 	sw $ra, 20($sp)
 	addiu $fp, $sp, 24
-	
+	# Guardo en pila
 	sw $a0, 0($fp) # primer nodo
 	sw $a1, 4($fp) # valor
-	
+	##############
 	# Comparo valor en el primer nodo
 	lw $t0, 0($a0)
-	blt $a1, $t0, esmenor
 	
+	blt $a1, $t0, esmenor
 	# Llamo a create
 	
 	move $t0, $a0
@@ -74,6 +74,16 @@ iio:
 	lw $ra, 20($sp)
 	addiu $sp, $sp, 32
 	jr $ra
+	esmenor:
+	lw $t0, 4($a0)
+	beqz $t0, esultimo
+	
+	esultimo:
+	move $a0, $a1
+	move $a1, $zero
+	jal create
+	
+	
 	
 create:
 	move $t0, $a0
@@ -87,5 +97,3 @@ create:
 	
 	jr $ra
 	
-esmenor:
-	b endp
