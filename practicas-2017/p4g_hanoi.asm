@@ -1,3 +1,4 @@
+## Check Hanoi Tower: http://www.uterra.com/juegos/torre_hanoi.php
 	.data
 intron:	.asciiz "Introduce num. de discos: \n"
 moved:	.asciiz "Muevo el disco "
