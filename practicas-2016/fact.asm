@@ -6,14 +6,14 @@
 ## $v0 - syscall parameter and return value
 
 	.data
-msg:	.asciiz "The factorial of 10 is: "
+msg:	.asciiz "The factorial of 5 is: "
 
 	.text
 main: 	la $a0, msg
 	li $v0, 4		# Load syscall print-string into v0
 	syscall			# Make the syscall
 	
-	li $a0, 3		# Put argument (3) in $a0
+	li $a0, 5		# Put argument (3) in $a0
 	jal fact		# Call factorial funcion
 	
 	move $a0, $v0		# Move fact result in $a0
