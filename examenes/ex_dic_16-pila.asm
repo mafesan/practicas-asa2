@@ -37,6 +37,7 @@ askloop:
 printl:
 	move $a0, $s0
 	jal print
+	b endop
 
 errmem:
 	la $a0, memerr
@@ -62,7 +63,7 @@ create:	# create (val, node.prev)
 push:	# push (node.top, val)
 	subu $sp, $sp, 32
 	sw $ra, 4($sp)
-	sw $sp, 8($sp)
+	sw $fp, 8($sp)
 	addiu $fp, $sp, 16
 
 	sw $a0, 0($fp)
@@ -74,14 +75,14 @@ push:	# push (node.top, val)
 	jal create
 	
 	lw $ra, 4($sp)
-	lw $sp, 8($sp)
+	lw $fp, 8($sp)
 	addiu $sp, $sp, 32
 	jr $ra
 	
 print:	# print(node.top)
 	subu $sp, $sp, 32
 	sw $ra, 4($sp)
-	sw $sp, 8($sp)
+	sw $fp, 8($sp)
 	addiu $fp, $sp, 16
 	
 	sw $a0, 0($fp)
@@ -92,6 +93,7 @@ print:	# print(node.top)
 	move $a0, $t1
 	jal print
 returnp:
+	lw $t0, 0($fp)
 	lw $a0, 0($t0)
 	li $v0, 1
 	syscall
@@ -101,6 +103,6 @@ returnp:
 	syscall
 	
 	lw $ra, 4($sp)
-	lw $sp, 8($sp)
+	lw $fp, 8($sp)
 	addiu $sp, $sp, 32
 	jr $ra
