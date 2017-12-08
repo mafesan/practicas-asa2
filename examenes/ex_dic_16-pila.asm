@@ -135,12 +135,10 @@ remove:	# remove(top, val)
 	move $t0, $a0
 	move $t1, $a1
 	
-	lw $t0, 4($t0) # Cargo la dir. del siguiente porque no puedo eliminar la cima
-	
 rloop:	
 	lw $t2, 0($t0)
 	beq $t2, $t1, rnode
-	sw $t0, 8($fp) # guardo nodo antes de saltar
+	sw $t0, 8($fp) # guardo nodo antes de cargar el siguiente
 	lw $t0, 4($t0)
 	beqz $t0, endol
 	b rloop
@@ -152,6 +150,7 @@ endol:
 	b returnrem
 rnode:
 	move $v0, $t0
+	
 	lw $t5, 4($t0)
 	lw $t4, 8($fp)
 	sw $t5, 4($t4)
