@@ -1,6 +1,8 @@
 	.data
-msg:	.asciiz "Introduce entero (0 para terminar): \n"
+msg:	.asciiz "Introduce entero (0 para terminar): "
 memerr:	.asciiz "Ups! No hay memoria. Terminando... \n"	
+delmsg:	.asciiz "Introduce entero a eliminar:  "
+dlfail:	.asciiz "Nodo no encontrado.\n"
 	.text
 main:
 	la $a0, msg
@@ -37,6 +39,21 @@ askloop:
 printl:
 	move $a0, $s0
 	jal print
+
+	la $a0, delmsg
+	li $v0, 4
+	syscall
+	
+	li $v0, 5
+	syscall
+	
+	move $a1, $v0
+	move $a0, $s0
+	jal remove
+	
+	move $a0, $s0
+	jal print
+	
 	b endop
 
 errmem:
@@ -106,3 +123,42 @@ returnp:
 	lw $fp, 8($sp)
 	addiu $sp, $sp, 32
 	jr $ra
+	
+remove:	# remove(top, val)
+ 	subu $sp, $sp, 32
+	sw $ra, 4($sp)
+	sw $fp, 8($sp)
+	addiu $fp, $sp, 16
+	sw $a0, 0($fp)
+	sw $a1, 4($fp)
+	
+	move $t0, $a0
+	move $t1, $a1
+	
+	lw $t0, 4($t0) # Cargo la dir. del siguiente porque no puedo eliminar la cima
+	
+rloop:	
+	lw $t2, 0($t0)
+	beq $t2, $t1, rnode
+	sw $t0, 8($fp) # guardo nodo antes de saltar
+	lw $t0, 4($t0)
+	beqz $t0, endol
+	b rloop
+	
+endol:
+	la $a0, dlfail
+	li $v0, 4
+	syscall
+	b returnrem
+rnode:
+	move $v0, $t0
+	lw $t5, 4($t0)
+	lw $t4, 8($fp)
+	sw $t5, 4($t4)
+	
+returnrem:
+	lw $ra, 4($sp)
+	lw $fp, 8($sp)
+	addiu $sp, $sp, 32
+	jr $ra
+	
