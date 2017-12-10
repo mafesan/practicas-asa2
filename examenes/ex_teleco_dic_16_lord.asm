@@ -87,18 +87,43 @@ insert_in_order:
 	
 	sw $v0, 8($fp) # Guardo dir. del nuevo nodo
 	
-	lw $t0, 0($fp)
+	lw $t2, 0($fp)
 
-	lw $t1, 0($t0) # Cargo valor de top
-	lw $t2, 4($t0) # Cargo top.next
-	
+	lw $t1, 0($t2) # Cargo valor de top
+	lw $t2, 4($t2) # Cargo top.next
+
 	# si el nuevo val es mayor que el top:
 	lw $t3, 4($fp)
 	bgt $t3, $t1, newtop # si new_val > val_top
+	beqz $t2, endoflist
+	# sw $t0, 12($fp) # Guardo nodo actual (top)
+	
+searchpos:
 	# en t2 tengo top.next 
+	lw $t0, 0($t2)	# next.val
+	lw $t1, 4($t2)	# next.next
+	
+	lw $t3, 4($fp) # new_val
+	bgt $t3, $t0, midinsert
+	beqz $t1, endoflist
+	move $t2, $t1
+	b searchpos
+	
+midinsert:
+	lw $t4, 8($fp)
+	sw $t1, 4($t4) # Hacer que new_node.next = next.next
+	sw $t4, 4($t2) # Cur_node.next = new_node
 	move $v0, $zero
 	b retinsert
 
+endoflist:
+	# Si hemos llegado al final de la lista
+	# es que el numero introducido es el mas pequeño
+	lw $t0, 8($fp)
+	sw $t0, 4($t2)
+	move $v0, $zero
+	b retinsert
+	
 newtop:
 	lw $v0, 8($fp)
 	lw $t1, 0($fp)
