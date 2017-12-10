@@ -2,7 +2,7 @@ tree_insert(val, root):
 
   new_node = tree_node_create(val, 0, 0)
 
-  loop:
+  while True:  # loop
     val_root = root.val
     if (val <= val_root):
           # Recorrer arbol izquierdo
