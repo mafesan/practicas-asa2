@@ -94,8 +94,9 @@ insert_in_order:
 	lw $t3, 4($fp)
 	bgt $t3, $t0, newtop # si new_val > val_top
 	beqz $t1, endoflist # si es menor, y top.next es NULL, estamos al final
+	sw $t2, 12($fp) # Guardo nodo actual (top)
 	move $t2, $t1
-	# sw $t0, 12($fp) # Guardo nodo actual (top)
+	
 	
 searchpos:
 	# en t2 tengo top.next 
@@ -105,13 +106,15 @@ searchpos:
 	lw $t3, 4($fp) # new_val
 	bgt $t3, $t0, midinsert
 	beqz $t1, endoflist
+	sw $t2, 12($fp) # Guardo nodo actual (top)
 	move $t2, $t1
 	b searchpos
 	
 midinsert:
-	lw $t4, 8($fp)
-	sw $t1, 4($t4) # Hacer que new_node.next = next.next
-	sw $t4, 4($t2) # Cur_node.next = new_node
+	lw $t4, 8($fp) # dir. del nodo creado
+	lw $t5, 12($fp) # dir del nodo anterior
+	sw $t4, 4($t5) # nodo anterior.next apunta a nuevo nodo
+	sw $t2, 4($t4) # new_node.next = nodo actual
 	move $v0, $zero
 	b retinsert
 
