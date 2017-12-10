@@ -40,7 +40,7 @@ askloop:
 	move $a1, $v0
 	jal insert_in_order
 	
-	beqz $v0, askloop # Si devuelve 0, el primer noso sigue siendo el mismo
+	beqz $v0, askloop # Si devuelve 0, el primer nodo sigue siendo el mismo
 	move $s0, $v0  # Actualizo valor del primer nodo
 	b askloop
 
@@ -88,12 +88,13 @@ insert_in_order:
 	sw $v0, 8($fp) # Guardo dir. del nuevo nodo
 	
 	lw $t2, 0($fp) # Cargo nodo cima
-	lw $t0, 0($t2)
-	lw $t1, 4($t2)
+	lw $t0, 0($t2) # t0 = top.val
+	lw $t1, 4($t2) # t1 = top.next
 	# si el nuevo val es mayor que el top:
 	lw $t3, 4($fp)
 	bgt $t3, $t0, newtop # si new_val > val_top
-	beqz $t2, endoflist
+	beqz $t1, endoflist # si es menor, y top.next es NULL, estamos al final
+	move $t2, $t1
 	# sw $t0, 12($fp) # Guardo nodo actual (top)
 	
 searchpos:
@@ -125,7 +126,6 @@ endoflist:
 newtop:
 	lw $v0, 8($fp)
 	lw $t1, 0($fp)
-	
 	sw $t1, 4($v0)
 
 retinsert:		
