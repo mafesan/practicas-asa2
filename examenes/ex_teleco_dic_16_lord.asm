@@ -87,14 +87,12 @@ insert_in_order:
 	
 	sw $v0, 8($fp) # Guardo dir. del nuevo nodo
 	
-	lw $t2, 0($fp)
-
-	lw $t1, 0($t2) # Cargo valor de top
-	lw $t2, 4($t2) # Cargo top.next
-
+	lw $t2, 0($fp) # Cargo nodo cima
+	lw $t0, 0($t2)
+	lw $t1, 4($t2)
 	# si el nuevo val es mayor que el top:
 	lw $t3, 4($fp)
-	bgt $t3, $t1, newtop # si new_val > val_top
+	bgt $t3, $t0, newtop # si new_val > val_top
 	beqz $t2, endoflist
 	# sw $t0, 12($fp) # Guardo nodo actual (top)
 	
