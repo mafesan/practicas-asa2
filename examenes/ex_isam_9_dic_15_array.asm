@@ -22,20 +22,30 @@ main:
 	
 	beq $v0, -1, notfound
 	
-	move $t0, $v0
+	move $s1, $v0
 	
 	# Imprimo posicion del valor buscado
 	la $a0, msg2
 	li $v0, 4
 	syscall
 	
-	move $a0, $t0
+	move $a0, $s1
 	li $v0, 1
 	syscall
 	
 	li $a0, 10
 	li $v0, 11
 	syscall
+
+	move $a0, $s1
+	addiu $a1, $s1, 1
+	la $a2, miarr
+	
+	jal intercambiar
+	
+	la $a0, miarr
+	
+	jal imprimir
 	
 	b endop
 	
@@ -85,3 +95,47 @@ returnBuscar:
 	addiu $sp, $sp, 32
 	jr $ra
 	
+intercambiar:
+	move $t0, $a0
+	move $t1, $a1
+	move $t2, $a2
+	
+	mul $t0, $t0, 4
+	mul $t1, $t1, 4
+	
+	add $t3, $t2, $t0
+	add $t4, $t2, $t1
+	
+	lw $t5, 0($t3)
+	lw $t6, 0($t4)
+	
+	sw $t6, 0($t3)
+	sw $t5, 0($t4)
+	
+	jr $ra
+
+imprimir:	
+	subu $sp, $sp, 32
+	sw $ra, 4($sp)
+	sw $fp, 8($sp)
+	addiu $fp, $sp, 16
+	sw $a0, 0($fp)
+
+	lw $a0, 0($a0)
+	beqz $a0, retprint
+	li $v0, 1
+	syscall
+	
+	li $a0, 10
+	li $v0, 11
+	syscall
+	
+	lw $a0, 0($fp)
+	add $a0, $a0, 4
+	jal imprimir
+	
+retprint:
+	lw $ra, 4($sp)
+	lw $fp, 8($sp)
+	addiu $sp, $sp, 32
+	jr $ra
