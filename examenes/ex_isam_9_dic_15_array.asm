@@ -1,11 +1,20 @@
 	.data
+msg0:	.asciiz "Introduce valor para inicializar: "
 msg1:	.asciiz "Introduce el valor que quieres buscar: "
 msg2:	.asciiz "El valor esta en la posicion: "
 msg3:	.asciiz "Valores intercambiados. Imprimiendo: \n"
 msg4:	.asciiz "Valor no encontrado :( \n"
-miarr:	.word 3, 5, 6, 12, 9, 1
+miarr:	.word 0:5
+len:	.word 6
 	.text
 main:
+
+	la $a0, miarr
+	la $a1, len
+	lw $a1, 0($a1)
+	
+	jal inicializar
+	
 	la $a0, msg1
 	li $v0, 4
 	syscall
@@ -138,4 +147,28 @@ retprint:
 	lw $ra, 4($sp)
 	lw $fp, 8($sp)
 	addiu $sp, $sp, 32
+	jr $ra
+	
+inicializar:
+	move $t0, $a0
+	move $t1, $a1
+	move $t3, $zero
+	subu $t4, $t1, 1
+	mul $t4, $t4, 4
+	
+	add $t2, $t0, $t3
+loopinic:
+	bgt $t3, $t4, endinic
+	la $a0, msg0
+	li $v0, 4
+	syscall
+	
+	li $v0, 5
+	syscall
+	
+	sw $v0, 0($t2)
+	add $t3, $t3, 4
+	add $t2, $t0, $t3
+	b loopinic
+endinic:
 	jr $ra
